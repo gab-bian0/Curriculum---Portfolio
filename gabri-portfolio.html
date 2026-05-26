@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriele Marcucci — Biologo & Bioinformatico</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080c10;
+    --bg2: #0d1219;
+    --bg3: #111820;
+    --accent: #00e5b0;
+    --accent2: #00b4ff;
+    --accent-dim: rgba(0,229,176,0.12);
+    --text: #e8f0ea;
+    --muted: #6a8070;
+    --border: rgba(0,229,176,0.15);
+    --mono: 'DM Mono', monospace;
+    --serif: 'DM Serif Display', serif;
+    --sans: 'DM Sans', sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 4rem;
+    border-bottom: 1px solid var(--border);
+    background: rgba(8,12,16,0.85);
+    backdrop-filter: blur(12px);
+  }
+  .nav-logo { font-family: var(--mono); font-size: 0.85rem; color: var(--accent); letter-spacing: 0.1em; }
+  .nav-links { display: flex; gap: 2.5rem; list-style: none; }
+  .nav-links a { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); text-decoration: none; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.3s; }
+  .nav-links a:hover { color: var(--accent); }
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding: 8rem 4rem 4rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-grid {
+    position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(0,229,176,0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(0,229,176,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+    mask-image: radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  }
+  .hero-glow {
+    position: absolute;
+    width: 600px; height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(0,229,176,0.06) 0%, transparent 70%);
+    top: 50%; left: 55%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-content { position: relative; max-width: 900px; }
+  .hero-tag {
+    font-family: var(--mono); font-size: 0.75rem; color: var(--accent);
+    letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 1.5rem;
+    display: flex; align-items: center; gap: 0.75rem;
+  }
+  .hero-tag::before { content: ''; display: block; width: 32px; height: 1px; background: var(--accent); }
+  .hero-name { font-family: var(--serif); font-size: clamp(3.5rem, 7vw, 6.5rem); line-height: 0.95; letter-spacing: -0.02em; margin-bottom: 0.25rem; }
+  .hero-name em { font-style: italic; color: var(--accent); }
+  .hero-subtitle { font-family: var(--mono); font-size: 1rem; color: var(--muted); margin-top: 1.5rem; margin-bottom: 2.5rem; letter-spacing: 0.02em; }
+  .hero-subtitle span { color: var(--accent2); }
+  .hero-desc { max-width: 520px; color: rgba(232,240,234,0.65); font-size: 1rem; line-height: 1.8; margin-bottom: 3rem; }
+  .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+  .btn { font-family: var(--mono); font-size: 0.8rem; letter-spacing: 0.1em; text-transform: uppercase; padding: 0.9rem 2rem; border-radius: 2px; text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; }
+  .btn-primary { background: var(--accent); color: var(--bg); font-weight: 500; }
+  .btn-primary:hover { background: #00ffc8; box-shadow: 0 0 30px rgba(0,229,176,0.3); }
+  .btn-outline { background: transparent; color: var(--accent); border: 1px solid var(--border); }
+  .btn-outline:hover { border-color: var(--accent); background: var(--accent-dim); }
+  .sequence-bar { width: 100%; overflow: hidden; padding: 1rem 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg2); }
+  .sequence-inner { display: flex; gap: 0; white-space: nowrap; animation: ticker 30s linear infinite; }
+  .sequence-inner span { font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.3em; color: var(--muted); padding: 0 2rem; }
+  .sequence-inner .hl { color: var(--accent); }
+  @keyframes ticker { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+  section { padding: 6rem 4rem; position: relative; }
+  .section-label { font-family: var(--mono); font-size: 0.7rem; color: var(--accent); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.75rem; }
+  .section-label::after { content: ''; display: block; flex: 1; max-width: 60px; height: 1px; background: var(--border); }
+  .section-title { font-family: var(--serif); font-size: clamp(2.2rem, 4.5vw, 3.2rem); line-height: 1.1; margin-bottom: 3rem; }
+  #about { background: var(--bg2); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.2fr; gap: 5rem; align-items: start; }
+  .about-text p { color: rgba(232,240,234,0.7); margin-bottom: 1.25rem; font-size: 1rem; }
+  .about-text strong { color: var(--text); font-weight: 400; }
+  .about-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .stat-cell { background: var(--bg2); padding: 2rem; }
+  .stat-num { font-family: var(--serif); font-size: 2.8rem; color: var(--accent); line-height: 1; margin-bottom: 0.5rem; }
+  .stat-label { font-family: var(--mono); font-size: 0.7rem; color: var(--muted); letter-spacing: 0.1em; text-transform: uppercase; }
+
+  /* TIMELINE ESPERIENZE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: grid; grid-template-columns: 180px 1fr; gap: 2.5rem; padding: 2rem 0; border-bottom: 1px solid var(--border); }
+  .tl-item:last-child { border-bottom: none; }
+  .tl-date { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); letter-spacing: 0.08em; padding-top: 0.25rem; }
+  .tl-date .current { color: var(--accent); }
+  .tl-role { font-family: var(--serif); font-size: 1.25rem; margin-bottom: 0.3rem; }
+  .tl-company { font-family: var(--mono); font-size: 0.78rem; color: var(--accent2); margin-bottom: 0.75rem; }
+  .tl-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.4rem; }
+  .tl-bullets li { font-size: 0.88rem; color: rgba(232,240,234,0.65); padding-left: 1rem; position: relative; }
+  .tl-bullets li::before { content: '›'; position: absolute; left: 0; color: var(--accent); }
+
+  /* FORMAZIONE */
+  #education { background: var(--bg2); }
+  .edu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .edu-card { background: var(--bg2); padding: 2rem 2.5rem; }
+  .edu-degree { font-family: var(--serif); font-size: 1.2rem; margin-bottom: 0.5rem; }
+  .edu-uni { font-family: var(--mono); font-size: 0.75rem; color: var(--accent2); margin-bottom: 0.5rem; }
+  .edu-meta { font-family: var(--mono); font-size: 0.72rem; color: var(--muted); display: flex; gap: 1.5rem; }
+  .edu-vote { color: var(--accent); }
+
+  /* SKILLS */
+  .skills-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .skill-card { background: var(--bg); padding: 2rem; position: relative; overflow: hidden; transition: background 0.3s; }
+  .skill-card:hover { background: var(--bg3); }
+  .skill-card::before { content: ''; position: absolute; top: 0; left: 0; width: 3px; height: 0; background: var(--accent); transition: height 0.4s ease; }
+  .skill-card:hover::before { height: 100%; }
+  .skill-icon { font-family: var(--mono); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.15em; margin-bottom: 1rem; }
+  .skill-name { font-family: var(--serif); font-size: 1.35rem; margin-bottom: 0.75rem; }
+  .skill-tags { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+  .tag { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.08em; padding: 0.25rem 0.6rem; border: 1px solid var(--border); color: var(--muted); border-radius: 2px; }
+
+  /* ALTRO */
+  #altro { background: var(--bg2); }
+  .altro-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .altro-card { background: var(--bg2); padding: 1.75rem 2rem; }
+  .altro-label { font-family: var(--mono); font-size: 0.65rem; color: var(--accent); letter-spacing: 0.15em; text-transform: uppercase; margin-bottom: 0.75rem; }
+  .altro-title { font-family: var(--serif); font-size: 1.1rem; margin-bottom: 0.4rem; }
+  .altro-sub { font-size: 0.82rem; color: var(--muted); font-family: var(--mono); }
+
+  /* CONTACT */
+  .contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; }
+  .contact-big { font-family: var(--serif); font-size: clamp(2rem, 4vw, 3rem); line-height: 1.2; margin-bottom: 2rem; }
+  .contact-big em { color: var(--accent); font-style: italic; }
+  .contact-links { display: flex; flex-direction: column; gap: 1px; background: var(--border); border: 1px solid var(--border); }
+  .contact-link { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.75rem; background: var(--bg); text-decoration: none; color: var(--text); font-family: var(--mono); font-size: 0.85rem; transition: background 0.25s; }
+  .contact-link:hover { background: var(--bg3); }
+  .contact-link span { color: var(--muted); font-size: 0.75rem; }
+  footer { padding: 2rem 4rem; border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; font-family: var(--mono); font-size: 0.7rem; color: var(--muted); }
+  .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .reveal.visible { opacity: 1; transform: none; }
+  .cursor { position: fixed; width: 8px; height: 8px; background: var(--accent); border-radius: 50%; pointer-events: none; z-index: 9999; transition: transform 0.15s ease; mix-blend-mode: screen; }
+  @media (max-width: 768px) {
+    nav { padding: 1.25rem 1.5rem; }
+    .nav-links { display: none; }
+    section { padding: 4rem 1.5rem; }
+    .hero { padding: 6rem 1.5rem 3rem; }
+    .about-grid, .contact-inner, .edu-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .altro-grid { grid-template-columns: 1fr; }
+    .tl-item { grid-template-columns: 1fr; gap: 0.5rem; }
+    footer { flex-direction: column; gap: 0.5rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+
+<nav>
+  <div class="nav-logo">G.MARCUCCI // BIO+CODE</div>
+  <ul class="nav-links">
+    <li><a href="#about">Chi sono</a></li>
+    <li><a href="#experience">Esperienze</a></li>
+    <li><a href="#education">Formazione</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#contact">Contatti</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="hero-tag">Biologo · Bioinformatico · Lugo (RA)</div>
+    <h1 class="hero-name">Gabriele<br><em>Marcucci</em></h1>
+    <p class="hero-subtitle">
+      <span>biodiversità &amp; evoluzione</span> · genomica · scripting · dati
+    </p>
+    <p class="hero-desc">
+      Laureato magistrale in Biodiversità ed Evoluzione all'Università di Bologna con 109/110.
+      Vivo all'intersezione tra biologia computazionale e codice — dalle pipeline NGS
+      agli script Bash e R, fino all'analisi di sequenze genomiche.
+    </p>
+    <div class="btn-group">
+      <a href="#experience" class="btn btn-primary">Esperienze</a>
+      <a href="mailto:gabrimarcucci@outlook.it" class="btn btn-outline">Scrivimi</a>
+    </div>
+  </div>
+</section>
+
+<!-- DNA TICKER -->
+<div class="sequence-bar">
+  <div class="sequence-inner">
+    <span>ATGCTTGAC<span class="hl">AGG</span>CTAAGTCGATTCGAAATGCTTGACAGGCTAAGTCGATTCGAAATGCTTGAC<span class="hl">TGA</span>CTAAGTCGATTCGAA</span>
+    <span>PYTHON · BASH · R · HTML · BLAST · PIPELINE NGS · CONDA · BIOINFORMATICA · GENOMICA · EVOLUZIONE</span>
+    <span>ATGCTTGAC<span class="hl">AGG</span>CTAAGTCGATTCGAAATGCTTGACAGGCTAAGTCGATTCGAAATGCTTGAC<span class="hl">TGA</span>CTAAGTCGATTCGAA</span>
+    <span>PYTHON · BASH · R · HTML · BLAST · PIPELINE NGS · CONDA · BIOINFORMATICA · GENOMICA · EVOLUZIONE</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="about-grid reveal">
+    <div>
+      <div class="section-label">// 001</div>
+      <h2 class="section-title">Chi sono</h2>
+      <div class="about-text">
+        <p>Sono <strong>Gabriele Marcucci</strong>, biologo e bioinformatico originario di Lugo, in Romagna. Il mio percorso accademico si è sviluppato interamente all'Università di Bologna, dove ho conseguito sia la triennale in Scienze Biologiche che la magistrale in Biodiversità ed Evoluzione.</p>
+        <p>Durante il tirocinio al <strong>MoZoo Lab (BIGEA, UniBO)</strong> ho accumulato 775 ore di lavoro pratico su dati genomici reali: pipeline NGS, BLAST, allineamenti e scripting in Bash e R.</p>
+        <p>Oggi lavoro nell'<strong>ufficio qualità di Evercompounds S.p.A.</strong>, applicando rigore procedurale e attenzione al dettaglio — caratteristiche che porto anche nel codice che scrivo nel tempo libero.</p>
+      </div>
+    </div>
+    <div class="about-stats">
+      <div class="stat-cell">
+        <div class="stat-num">109</div>
+        <div class="stat-label">voto laurea magistrale / 110</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">775</div>
+        <div class="stat-label">ore di tirocinio in bioinformatica</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">101</div>
+        <div class="stat-label">voto laurea triennale / 110</div>
+      </div>
+      <div class="stat-cell">
+        <div class="stat-num">B2</div>
+        <div class="stat-label">livello inglese certificato</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ESPERIENZE -->
+<section id="experience">
+  <div class="section-label">// 002</div>
+  <h2 class="section-title">Esperienze</h2>
+  <div class="timeline reveal">
+    <div class="tl-item">
+      <div class="tl-date">Gen 2026 – <span class="current">Oggi</span></div>
+      <div>
+        <div class="tl-role">Addetto Ufficio Qualità</div>
+        <div class="tl-company">Evercompounds S.p.A. · Fusignano (RA)</div>
+        <ul class="tl-bullets">
+          <li>Controllo e gestione qualità in contesto industriale</li>
+          <li>Applicazione di procedure normative e standard di settore</li>
+        </ul>
+      </div>
+    </div>
+    <div class="tl-item">
+      <div class="tl-date">2023 – 2025</div>
+      <div>
+        <div class="tl-role">Tirocinante Bioinformatico</div>
+        <div class="tl-company">MoZoo Lab · BIGEA, Università di Bologna</div>
+        <ul class="tl-bullets">
+          <li>775 ore di tirocinio certificato in bioinformatica</li>
+          <li>Analisi dati genomici: pipeline NGS, BLAST, allineamenti multipli di sequenze</li>
+          <li>Scripting in Bash e R per elaborazione e visualizzazione dati</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FORMAZIONE -->
+<section id="education">
+  <div class="section-label">// 003</div>
+  <h2 class="section-title">Formazione</h2>
+  <div class="edu-grid reveal">
+    <div class="edu-card">
+      <div class="edu-degree">Laurea Magistrale in<br>Biodiversità ed Evoluzione</div>
+      <div class="edu-uni">Alma Mater Studiorum – Università di Bologna</div>
+      <div class="edu-meta">
+        <span>2025</span>
+        <span class="edu-vote">109/110</span>
+      </div>
+    </div>
+    <div class="edu-card">
+      <div class="edu-degree">Laurea Triennale in<br>Scienze Biologiche</div>
+      <div class="edu-uni">Alma Mater Studiorum – Università di Bologna</div>
+      <div class="edu-meta">
+        <span>2023</span>
+        <span class="edu-vote">101/110</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-label">// 004</div>
+  <h2 class="section-title">Competenze</h2>
+  <div class="skills-grid">
+    <div class="skill-card reveal">
+      <div class="skill-icon">[ ANALISI GENOMICA ]</div>
+      <div class="skill-name">Bioinformatica</div>
+      <p style="font-size:0.88rem;color:var(--muted);">Pipeline NGS, allineamento sequenze, ricerca per omologia, analisi di biodiversità e filogenesi.</p>
+      <div class="skill-tags">
+        <span class="tag">BLAST (basi)</span>
+        <span class="tag">Pipeline NGS (basi)</span>
+        <span class="tag">Allineamenti</span>
+        <span class="tag">Genomica</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">[ SCRIPTING ]</div>
+      <div class="skill-name">Programmazione</div>
+      <p style="font-size:0.88rem;color:var(--muted);">Sviluppo di script per elaborazione e automazione dati biologici, visualizzazione, piccoli progetti personali.</p>
+      <div class="skill-tags">
+        <span class="tag">Python</span>
+        <span class="tag">Bash</span>
+        <span class="tag">R</span>
+        <span class="tag">HTML</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">[ AMBIENTE ]</div>
+      <div class="skill-name">Infrastruttura & Tools</div>
+      <p style="font-size:0.88rem;color:var(--muted);">Gestione ambienti virtuali, controllo versione, sviluppo su sistemi Unix/Linux.</p>
+      <div class="skill-tags">
+        <span class="tag">Ambienti Conda</span>
+        <span class="tag">Git</span>
+        <span class="tag">Linux</span>
+        <span class="tag">GitHub</span>
+      </div>
+    </div>
+    <div class="skill-card reveal">
+      <div class="skill-icon">[ LABORATORIO ]</div>
+      <div class="skill-name">Biologia Sperimentale</div>
+      <p style="font-size:0.88rem;color:var(--muted);">Tecniche di laboratorio biologico acquisite nel percorso universitario e nel tirocinio.</p>
+      <div class="skill-tags">
+        <span class="tag">Lab. biologico</span>
+        <span class="tag">Metodologia scientifica</span>
+        <span class="tag">Italiano madrelingua</span>
+        <span class="tag">Inglese B2</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ALTRO -->
+<section id="altro">
+  <div class="section-label">// 005</div>
+  <h2 class="section-title">Attività & Altro</h2>
+  <div class="altro-grid reveal">
+    <div class="altro-card">
+      <div class="altro-label">[ Associativo ]</div>
+      <div class="altro-title">Responsabile Musici</div>
+      <div class="altro-sub">Rione de' Brozzi · Lugo di Romagna<br>2022 – Oggi</div>
+    </div>
+    <div class="altro-card">
+      <div class="altro-label">[ Associativo ]</div>
+      <div class="altro-title">Consiglio Direttivo</div>
+      <div class="altro-sub">Rione de' Brozzi · Lugo (RA)<br>2026 – Oggi</div>
+    </div>
+    <div class="altro-card">
+      <div class="altro-label">[ Certificazione ]</div>
+      <div class="altro-title">Bartender Certificato</div>
+      <div class="altro-sub">Competenze professionali in<br>miscelazione e servizio · 2019</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="contact-inner reveal">
+    <div>
+      <div class="section-label">// 006</div>
+      <h2 class="contact-big">Parliamo di<br><em>genomica,</em><br>codice o dati.</h2>
+      <p style="color:var(--muted);font-size:0.9rem;max-width:380px;margin-top:1rem;">
+        Sono aperto a collaborazioni, opportunità nel campo bioinformatico o semplicemente a una chiacchierata tecnica.
+      </p>
+    </div>
+    <div class="contact-links">
+      <a href="mailto:gabrimarcucci@outlook.it" class="contact-link">
+        gabrimarcucci@outlook.it
+        <span>Email →</span>
+      </a>
+      <a href="https://github.com/gab-bian0" class="contact-link">
+        GitHub
+        <span>github.com/gab-bian0 →</span>
+      </a>
+      <a href="tel:+393349495832" class="contact-link">
+        334 949 5832
+        <span>Telefono →</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Gabriele Marcucci · Biologo &amp; Bioinformatico · Lugo (RA)</span>
+  <span>Fatto con Bash, R e curiosità</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX - 4 + 'px';
+    cursor.style.top = e.clientY - 4 + 'px';
+  });
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => cursor.style.transform = 'scale(3)');
+    el.addEventListener('mouseleave', () => cursor.style.transform = 'scale(1)');
+  });
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+      }
+    });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  document.querySelectorAll('.skill-card').forEach((card, i) => {
+    card.style.transitionDelay = (i * 0.1) + 's';
+  });
+</script>
+</body>
+</html>
